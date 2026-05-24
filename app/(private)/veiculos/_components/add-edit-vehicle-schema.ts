@@ -26,7 +26,7 @@ export const vehicleSchema = z.object({
     .optional()
     .refine((v) => !v || !isNaN(Number(v)), "Velocidade inválida")
     .refine((v) => !v || Number(v) >= 0, "Velocidade não pode ser negativa"),
-  ignition: z.boolean().default(false),
+  ignition: z.boolean(),
 });
 
 export type VehicleSchemaType = z.infer<typeof vehicleSchema>;
