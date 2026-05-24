@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Vehicle Tracking — Frontend
 
-## Getting Started
+Interface web para rastreamento de veículos em tempo real, com listagem e mapa interativo.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** com App Router
+- **React 19** + TypeScript 5
+- **Tailwind CSS v4** + shadcn/ui
+- **Leaflet + react-leaflet** — mapa interativo
+- **SWR v2** — data fetching com revalidação automática (30s)
+- **Zustand v5** — estado global do mapa
+- **Axios** — requisições HTTP e mutações
+- **react-hook-form + Zod** — formulários com validação
+- **Sonner** — notificações toast
+
+## Como rodar
 
 ```bash
+# 1. Instalar dependências
+npm install
+
+# 2. Configurar variáveis de ambiente
+cp .env.example .env
+# Edite .env se necessário
+
+# 3. Iniciar em desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A aplicação estará disponível em `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variáveis de ambiente
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variável              | Descrição               | Padrão                  |
+| --------------------- | ----------------------- | ----------------------- |
+| `NEXT_PUBLIC_API_URL` | URL base da API backend | `http://localhost:8000` |
 
-## Learn More
+## Funcionalidades
 
-To learn more about Next.js, take a look at the following resources:
+- **Listagem de veículos** em tabela com placa, velocidade e status de ignição
+- **Mapa interativo** (OpenStreetMap) com marcadores para cada veículo
+- Clicar em um veículo na tabela **centraliza o mapa** naquela posição (`flyTo`)
+- **Criar, editar e deletar** veículos via dialogs
+- Atualização automática dos dados a cada 30 segundos
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estrutura relevante
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/(private)/veiculos/       # Página principal
+  page.tsx                    # Orquestra tabela + mapa + dialogs
+  _components/
+    vehicle-columns.tsx       # Definição de colunas @tanstack/react-table
+    add-edit-vehicle-dialog   # Dialog de criação/edição
+    delete-vehicle-dialog     # Dialog de confirmação de exclusão
+components/shared/map/
+  vehicle-map.tsx             # MapContainer Leaflet (dynamic import)
+  map-initializer.tsx         # Captura instância do mapa para o store
+stores/map-store.ts           # Zustand store com referência do mapa
+api/
+  index.ts                    # apiClient Axios + fetcher SWR
+  queries/vehicles.ts         # Hooks SWR + types
+```
