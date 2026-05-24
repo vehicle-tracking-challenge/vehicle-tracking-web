@@ -4,31 +4,41 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Vehicle } from "@/api/queries/vehicles";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconTrash,
+  IconCar,
+  IconMotorbike,
+  IconTruck,
+} from "@tabler/icons-react";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 interface VehicleColumnsProps {
   onEdit: (vehicle: Vehicle) => void;
   onDelete: (vehicle: Vehicle) => void;
-  onSelect: (vehicle: Vehicle) => void;
 }
+
+const VehicleTypeIcon = ({ type }: { type: Vehicle["vehicle_type"] }) => {
+  if (type === "moto")
+    return <IconMotorbike className="size-4 shrink-0 text-muted-foreground" />;
+  if (type === "caminhao")
+    return <IconTruck className="size-4 shrink-0 text-muted-foreground" />;
+  return <IconCar className="size-4 shrink-0 text-muted-foreground" />;
+};
 
 export const vehicleColumns = ({
   onEdit,
   onDelete,
-  onSelect,
 }: VehicleColumnsProps): ColumnDef<Vehicle, unknown>[] => [
   {
     accessorKey: "name",
     header: "Nome",
     cell: ({ row }) => (
-      <button
-        className="font-medium text-left hover:text-primary transition-colors"
-        onClick={() => onSelect(row.original)}
-      >
+      <span className="flex items-center gap-2 font-medium">
+        <VehicleTypeIcon type={row.original.vehicle_type} />
         {row.original.name}
-      </button>
+      </span>
     ),
   },
   {
@@ -41,11 +51,13 @@ export const vehicleColumns = ({
     ),
   },
   {
-    accessorKey: "speed",
-    header: "Velocidade",
+    accessorKey: "driver",
+    header: "Motorista",
     cell: ({ row }) => (
-      <span>
-        {row.original.speed != null ? `${row.original.speed} km/h` : "—"}
+      <span className="text-sm">
+        {row.original.driver ?? (
+          <span className="text-muted-foreground">—</span>
+        )}
       </span>
     ),
   },

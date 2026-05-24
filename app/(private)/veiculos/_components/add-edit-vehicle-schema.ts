@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPlate } from "@/lib/validation";
 
 export const vehicleSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -6,27 +7,23 @@ export const vehicleSchema = z.object({
     .string()
     .min(7, "Placa inválida")
     .max(8, "Placa inválida")
+    .refine(
+      (v) => isValidPlate(v),
+      "Formato inválido — use Mercosul (ABC1D23) ou padrão antigo (ABC-1234)",
+    )
     .transform((v) => v.toUpperCase()),
-  latitude: z
-    .string()
-    .refine((v) => !isNaN(Number(v)), "Latitude inválida")
-    .refine(
-      (v) => Number(v) >= -90 && Number(v) <= 90,
-      "Latitude deve ser entre -90 e 90",
-    ),
-  longitude: z
-    .string()
-    .refine((v) => !isNaN(Number(v)), "Longitude inválida")
-    .refine(
-      (v) => Number(v) >= -180 && Number(v) <= 180,
-      "Longitude deve ser entre -180 e 180",
-    ),
-  speed: z
+  vehicle_type: z.enum(["carro", "moto", "caminhao"]),
+  model: z.string().max(100).optional().or(z.literal("")),
+  color: z.string().max(50).optional().or(z.literal("")),
+  year: z
     .string()
     .optional()
-    .refine((v) => !v || !isNaN(Number(v)), "Velocidade inválida")
-    .refine((v) => !v || Number(v) >= 0, "Velocidade não pode ser negativa"),
-  ignition: z.boolean(),
+    .refine(
+      (v) =>
+        !v || (!isNaN(Number(v)) && Number(v) >= 1900 && Number(v) <= 2100),
+      "Ano inválido (1900–2100)",
+    ),
+  driver: z.string().max(255).optional().or(z.literal("")),
 });
 
 export type VehicleSchemaType = z.infer<typeof vehicleSchema>;
@@ -34,8 +31,9 @@ export type VehicleSchemaType = z.infer<typeof vehicleSchema>;
 export const vehicleDefaultValues: VehicleSchemaType = {
   name: "",
   plate: "",
-  latitude: "",
-  longitude: "",
-  speed: "",
-  ignition: false,
+  vehicle_type: "carro",
+  model: "",
+  color: "",
+  year: "",
+  driver: "",
 };

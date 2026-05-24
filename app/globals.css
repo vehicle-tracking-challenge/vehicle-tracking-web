@@ -59,7 +59,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(70.5% 0.213 47.604);
+  --primary: oklch(0.558 0.228 274);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -98,8 +98,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(70.5% 0.213 47.604);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: oklch(0.62 0.22 274);
+  --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -139,4 +139,32 @@
   html {
     @apply font-sans;
   }
+}
+
+/* ── Leaflet popup — borda roxa ── */
+.vehicle-popup.leaflet-popup .leaflet-popup-content-wrapper {
+  border: 2px solid var(--primary);
+  border-radius: 0.625rem;
+  background-color: var(--card);
+  color: var(--card-foreground);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.vehicle-popup.leaflet-popup .leaflet-popup-tip {
+  background-color: var(--primary);
+}
+
+.vehicle-popup.leaflet-popup .leaflet-popup-content {
+  margin: 0;
+}
+
+.vehicle-popup.leaflet-popup a.leaflet-popup-close-button {
+  color: var(--muted-foreground);
+  top: 8px;
+  right: 8px;
+}
+
+.vehicle-popup.leaflet-popup a.leaflet-popup-close-button:hover {
+  background: none;
+  color: var(--foreground);
 }

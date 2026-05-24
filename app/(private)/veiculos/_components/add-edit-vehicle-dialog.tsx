@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Vehicle } from "@/api/queries/vehicles";
+import { formatPlateInput } from "@/lib/validation";
 import { apiClient } from "@/api";
 import {
   vehicleSchema,
@@ -14,10 +15,18 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,10 +56,11 @@ export const AddEditVehicleDialog = ({
       form.reset({
         name: vehicle.name,
         plate: vehicle.plate,
-        latitude: String(vehicle.latitude),
-        longitude: String(vehicle.longitude),
-        speed: vehicle.speed != null ? String(vehicle.speed) : "",
-        ignition: vehicle.ignition,
+        vehicle_type: vehicle.vehicle_type,
+        model: vehicle.model ?? "",
+        color: vehicle.color ?? "",
+        year: vehicle.year != null ? String(vehicle.year) : "",
+        driver: vehicle.driver ?? "",
       });
     } else {
       form.reset(vehicleDefaultValues);
@@ -63,10 +73,11 @@ export const AddEditVehicleDialog = ({
       const payload = {
         name: data.name,
         plate: data.plate,
-        latitude: Number(data.latitude),
-        longitude: Number(data.longitude),
-        speed: data.speed ? Number(data.speed) : null,
-        ignition: data.ignition,
+        vehicle_type: data.vehicle_type,
+        model: data.model || null,
+        color: data.color || null,
+        year: data.year ? Number(data.year) : null,
+        driver: data.driver || null,
       };
       if (vehicle) {
         await apiClient.put(`/veiculos/${vehicle.id}`, payload);
@@ -85,105 +96,130 @@ export const AddEditVehicleDialog = ({
   };
 
   const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      form.reset(vehicleDefaultValues);
-    }
+    if (!open) form.reset(vehicleDefaultValues);
     onOpenChange(open);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>
             {vehicle ? "Editar Veículo" : "Novo Veículo"}
           </DialogTitle>
+          <DialogDescription>
+            {vehicle
+              ? "Atualize as informações cadastrais do veículo."
+              : "Preencha os dados para cadastrar um novo veículo na frota."}
+          </DialogDescription>
         </DialogHeader>
 
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4"
         >
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Nome</Label>
-            <Input
-              id="name"
-              placeholder="Ex: Caminhão 01"
-              {...form.register("name")}
-            />
-            {form.formState.errors.name && (
-              <p className="text-xs text-destructive">
-                {form.formState.errors.name.message}
-              </p>
-            )}
-          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="name">Nome *</Label>
+              <Input
+                id="name"
+                placeholder="Ex: Caminhão 01"
+                {...form.register("name")}
+              />
+              {form.formState.errors.name && (
+                <p className="text-xs text-destructive">
+                  {form.formState.errors.name.message}
+                </p>
+              )}
+            </div>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="plate">Placa</Label>
-            <Input
-              id="plate"
-              placeholder="Ex: ABC1234"
-              {...form.register("plate")}
-            />
-            {form.formState.errors.plate && (
-              <p className="text-xs text-destructive">
-                {form.formState.errors.plate.message}
-              </p>
-            )}
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="plate">Placa *</Label>
+              <Controller
+                name="plate"
+                control={form.control}
+                render={({ field }) => (
+                  <Input
+                    id="plate"
+                    placeholder="Ex: ABC1D23"
+                    value={field.value}
+                    onChange={(e) =>
+                      field.onChange(formatPlateInput(e.target.value))
+                    }
+                  />
+                )}
+              />
+              {form.formState.errors.plate && (
+                <p className="text-xs text-destructive">
+                  {form.formState.errors.plate.message}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="latitude">Latitude</Label>
-              <Input
-                id="latitude"
-                placeholder="-23.5505"
-                {...form.register("latitude")}
+              <Label>Tipo *</Label>
+              <Controller
+                name="vehicle_type"
+                control={form.control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o tipo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="carro">🚗 Carro</SelectItem>
+                      <SelectItem value="moto">🏍️ Moto</SelectItem>
+                      <SelectItem value="caminhao">🚛 Caminhão</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               />
-              {form.formState.errors.latitude && (
-                <p className="text-xs text-destructive">
-                  {form.formState.errors.latitude.message}
-                </p>
-              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="longitude">Longitude</Label>
+              <Label htmlFor="model">Modelo</Label>
               <Input
-                id="longitude"
-                placeholder="-46.6333"
-                {...form.register("longitude")}
+                id="model"
+                placeholder="Ex: Volvo FH 460"
+                {...form.register("model")}
               />
-              {form.formState.errors.longitude && (
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="color">Cor</Label>
+              <Input
+                id="color"
+                placeholder="Ex: Branco"
+                {...form.register("color")}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="year">Ano</Label>
+              <Input
+                id="year"
+                placeholder="Ex: 2022"
+                {...form.register("year")}
+              />
+              {form.formState.errors.year && (
                 <p className="text-xs text-destructive">
-                  {form.formState.errors.longitude.message}
+                  {form.formState.errors.year.message}
                 </p>
               )}
             </div>
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="speed">Velocidade (km/h)</Label>
+            <Label htmlFor="driver">Motorista</Label>
             <Input
-              id="speed"
-              placeholder="Ex: 80"
-              {...form.register("speed")}
+              id="driver"
+              placeholder="Ex: João Silva"
+              {...form.register("driver")}
             />
-            {form.formState.errors.speed && (
-              <p className="text-xs text-destructive">
-                {form.formState.errors.speed.message}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="ignition"
-              className="size-4 rounded border-input"
-              {...form.register("ignition")}
-            />
-            <Label htmlFor="ignition">Ignição ligada</Label>
           </div>
 
           <DialogFooter className="mt-2">

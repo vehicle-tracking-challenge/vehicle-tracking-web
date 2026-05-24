@@ -5,13 +5,17 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
+  ColumnFiltersState,
 } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData, unknown>[];
   data: TData[];
+  searchColumn?: string;
+  searchPlaceholder?: string;
   addHandler?: () => void;
   addLabel?: string;
 }
@@ -19,26 +23,35 @@ interface DataTableProps<TData> {
 export function DataTable<TData>({
   columns,
   data,
-  addHandler,
-  addLabel = "Novo",
+  searchColumn,
+  searchPlaceholder = "Buscar...",
 }: DataTableProps<TData>) {
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    state: { columnFilters },
   });
 
   return (
-    <div className="flex flex-col gap-4 h-full">
-      {addHandler && (
-        <div className="flex justify-end">
-          <button
-            onClick={addHandler}
-            className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-          >
-            + {addLabel}
-          </button>
-        </div>
+    <div className="flex flex-col gap-3 h-full">
+      {searchColumn && (
+        <input
+          placeholder={searchPlaceholder}
+          value={
+            (table.getColumn(searchColumn)?.getFilterValue() as string) ?? ""
+          }
+          onChange={(e) =>
+            table.getColumn(searchColumn)?.setFilterValue(e.target.value)
+          }
+          className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
+        />
       )}
       <div className="rounded-lg border border-border overflow-auto">
         <table className="w-full text-sm">
