@@ -56,13 +56,13 @@ A aplicação estará disponível em `http://localhost:3000`.
 ```
 app/(private)/
   layout.tsx                  # Header com tabs de navegação
-  veiculos/
+  vehicles/
     page.tsx                  # Tabela de veículos + dialogs
     _components/
       vehicle-columns.tsx     # Definição de colunas @tanstack/react-table
       add-edit-vehicle-dialog # Dialog de criação/edição
       delete-vehicle-dialog   # Dialog de confirmação de exclusão
-  mapa/
+  map/
     page.tsx                  # Cards de resumo + mapa interativo
 components/shared/map/
   vehicle-map.tsx             # MapContainer Leaflet (dynamic import)

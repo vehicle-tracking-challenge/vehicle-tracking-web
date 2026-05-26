@@ -31,7 +31,7 @@ export const DeleteVehicleDialog = ({
     if (!vehicle) return;
     try {
       setLoading(true);
-      await apiClient.delete(`/veiculos/${vehicle.id}`);
+      await apiClient.delete(`/vehicles/${vehicle.id}`);
       toast.success("Veículo removido com sucesso!");
       onSuccess();
     } catch (error) {

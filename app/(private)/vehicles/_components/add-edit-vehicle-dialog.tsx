@@ -80,10 +80,10 @@ export const AddEditVehicleDialog = ({
         driver: data.driver || null,
       };
       if (vehicle) {
-        await apiClient.put(`/veiculos/${vehicle.id}`, payload);
+        await apiClient.put(`/vehicles/${vehicle.id}`, payload);
         toast.success("Veículo atualizado com sucesso!");
       } else {
-        await apiClient.post("/veiculos", payload);
+        await apiClient.post("/vehicles", payload);
         toast.success("Veículo criado com sucesso!");
       }
       onSuccess();

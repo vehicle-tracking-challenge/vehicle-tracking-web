@@ -135,7 +135,9 @@ export default function VeiculosPage() {
         )}
 
         {isLoading ? (
-          <Loading />
+          <div className="flex flex-1 items-center justify-center min-h-[300px]">
+            <Loading />
+          </div>
         ) : error ? (
           <ErrorDisplay />
         ) : vehicles.length === 0 ? (

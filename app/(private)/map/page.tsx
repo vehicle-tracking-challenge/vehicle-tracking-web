@@ -84,7 +84,13 @@ export default function MapaPage() {
           <ErrorDisplay />
         ) : (
           <div className="rounded-lg border border-border overflow-hidden h-full">
-            <VehicleMap vehicles={vehicles} />
+            {isLoading ? (
+              <div className="flex w-full h-full items-center justify-center">
+                <Loading />
+              </div>
+            ) : (
+              <VehicleMap vehicles={vehicles} />
+            )}
           </div>
         )}
       </div>

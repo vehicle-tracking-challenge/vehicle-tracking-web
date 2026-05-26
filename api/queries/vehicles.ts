@@ -55,11 +55,11 @@ export const useVehicles = (
   if (filters?.color) params.append("color", filters.color);
   if (filters?.year) params.append("year", filters.year);
 
-  return useSWR<VehiclePage>(`/veiculos?${params.toString()}`, fetcher, {
+  return useSWR<VehiclePage>(`/vehicles?${params.toString()}`, fetcher, {
     refreshInterval: 5000,
   });
 };
 
 export const useVehicleById = (id?: string) => {
-  return useSWR<Vehicle>(id ? `/veiculos/${id}` : null, fetcher);
+  return useSWR<Vehicle>(id ? `/vehicles/${id}` : null, fetcher);
 };

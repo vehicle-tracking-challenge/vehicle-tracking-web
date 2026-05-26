@@ -6,8 +6,8 @@ import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/shared/theme-toggle";
 
 const tabs = [
-  { label: "Veículos", href: "/veiculos" },
-  { label: "Mapa", href: "/mapa" },
+  { label: "Veículos", href: "/vehicles" },
+  { label: "Mapa", href: "/map" },
 ];
 
 export default function PrivateLayout({
@@ -27,8 +27,8 @@ export default function PrivateLayout({
           <nav className="flex ml-8 h-full">
             {tabs.map((tab) => {
               const isActive =
-                tab.href === "/veiculos"
-                  ? pathname === "/veiculos"
+                tab.href === "/vehicles"
+                  ? pathname === "/vehicles"
                   : pathname.startsWith(tab.href);
               return (
                 <Link
