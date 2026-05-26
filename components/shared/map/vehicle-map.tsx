@@ -65,7 +65,13 @@ export default function VehicleMap({
     <MapContainer
       center={BRAZIL_CENTER}
       zoom={5}
+      minZoom={2}
       style={{ height: "100%", width: "100%" }}
+      maxBounds={[
+        [-90, -180],
+        [90, 180],
+      ]}
+      maxBoundsViscosity={1.0}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
