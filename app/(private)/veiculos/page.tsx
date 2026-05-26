@@ -1,7 +1,11 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useVehicles, Vehicle, VehicleFilters } from "@/api/queries/vehicles";
+import {
+  useVehicles,
+  Vehicle,
+  VehicleQueryFilters,
+} from "@/api/queries/vehicles";
 import { DataTable } from "@/components/shared/data-table";
 import { Loading } from "@/components/shared/loading";
 import { ErrorDisplay } from "@/components/shared/error-display";
@@ -26,7 +30,7 @@ export default function VeiculosPage() {
     useState<VehicleFilterSchemaType | null>(null);
   const filterRef = useRef<VehicleFiltersRef>(null);
 
-  const activeFilters: VehicleFilters = (() => {
+  const activeFilters: VehicleQueryFilters = (() => {
     if (!appliedFilters) return {};
     return {
       name: appliedFilters.name || undefined,

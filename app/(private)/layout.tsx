@@ -7,7 +7,7 @@ import { ModeToggle } from "@/components/shared/theme-toggle";
 
 const tabs = [
   { label: "Veículos", href: "/veiculos" },
-  { label: "Mapa", href: "/veiculos/mapa" },
+  { label: "Mapa", href: "/mapa" },
 ];
 
 export default function PrivateLayout({

@@ -28,6 +28,13 @@ cp .env.example .env
 npm run dev
 ```
 
+Ou em modo produção:
+
+```bash
+npm run build
+npm start
+```
+
 A aplicação estará disponível em `http://localhost:3000`.
 
 ## Variáveis de ambiente
@@ -42,17 +49,21 @@ A aplicação estará disponível em `http://localhost:3000`.
 - **Mapa interativo** (OpenStreetMap) com marcadores para cada veículo
 - Clicar em um veículo na tabela **centraliza o mapa** naquela posição (`flyTo`)
 - **Criar, editar e deletar** veículos via dialogs
-- Atualização automática dos dados a cada 30 segundos
+- Atualização automática dos dados a cada 5 segundos
 
 ## Estrutura relevante
 
 ```
-app/(private)/veiculos/       # Página principal
-  page.tsx                    # Orquestra tabela + mapa + dialogs
-  _components/
-    vehicle-columns.tsx       # Definição de colunas @tanstack/react-table
-    add-edit-vehicle-dialog   # Dialog de criação/edição
-    delete-vehicle-dialog     # Dialog de confirmação de exclusão
+app/(private)/
+  layout.tsx                  # Header com tabs de navegação
+  veiculos/
+    page.tsx                  # Tabela de veículos + dialogs
+    _components/
+      vehicle-columns.tsx     # Definição de colunas @tanstack/react-table
+      add-edit-vehicle-dialog # Dialog de criação/edição
+      delete-vehicle-dialog   # Dialog de confirmação de exclusão
+  mapa/
+    page.tsx                  # Cards de resumo + mapa interativo
 components/shared/map/
   vehicle-map.tsx             # MapContainer Leaflet (dynamic import)
   map-initializer.tsx         # Captura instância do mapa para o store

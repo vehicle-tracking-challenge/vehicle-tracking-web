@@ -27,7 +27,7 @@ export interface VehiclePage {
   pages: number;
 }
 
-export interface VehicleFilters {
+export interface VehicleQueryFilters {
   name?: string;
   plate?: string;
   vehicle_type?: string;
@@ -37,7 +37,11 @@ export interface VehicleFilters {
   year?: string;
 }
 
-export const useVehicles = (page = 1, size = 50, filters?: VehicleFilters) => {
+export const useVehicles = (
+  page = 1,
+  size = 50,
+  filters?: VehicleQueryFilters,
+) => {
   const params = new URLSearchParams({
     page: String(page),
     size: String(size),
